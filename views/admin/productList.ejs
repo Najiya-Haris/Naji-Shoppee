@@ -1,0 +1,259 @@
+<%- include('../layouts/adminLayouts/header.ejs') %>
+
+    <%- include('../layouts/adminLayouts/sidebar.ejs') %>
+
+        <%- include('../layouts/adminLayouts/navbar.ejs') %>
+
+            <div class="ec-page-wrapper">
+
+                <div class="ec-content-wrapper ">
+                    <div class="content">
+                        <div class="breadcrumb-wrapper breadcrumb-contacts">
+                            <div>
+                                <h1>Product List</h1>
+                                <p class="breadcrumbs"><span><a href="/">Home</a></span>
+                                    <span><i class="mdi mdi-chevron-right"></i></span>Product
+                                </p>
+                            </div>
+                            <div>
+
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-success m-2" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Add Product</button>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="ec-vendor-list card card-default">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table id="responsive-data-table" class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>no</th>
+                                                        <th>image</th>
+                                                        <th>Name</th>
+                                                        <th>Category</th>
+                                                        <th>StockQuantity</th>
+                                                        <th>price</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                    <% if (product.length> 0) { %>
+                                                        <% for (let i=0; i < product.length; i++) { %>
+                                                            <tr>
+                                                                <td>
+                                                                    <%= i + 1 %>
+                                                                </td>
+                                                                <td class="py-1">
+                                                                    <% for (let j=0; j < 1; j++) { %>
+                                                                        <img style="width: 50px; height: 50px;"
+                                                                            src="/adminAssets/adminImages/<%= product[i].image[j] %>"
+                                                                            alt="image" />
+                                                                        <% } %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= product[i].productName %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= product[i].category %>
+                                                                </td>
+
+                                                                <td>
+                                                                    <%= product[i].stockQuantity %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= product[i].price %>
+                                                                </td>
+                                                                <td>
+                                                                    <a href="/admin/deleteProduct?id=<%= product[i]._id %>" onclick="return confirm('Are you sure you want to delete <%= product[i].productName%>?')">
+                                                                        <button type="button" class="btn btn-danger m-2" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Delete</button>
+                                                                      </a>
+                                                                      <a href="/admin/editProductList/<%= product[i]._id %>">
+                                                                        <button type="button" class="btn btn-success m-2"  >EDIT</button>
+                                                                      </a>
+
+                                                              </td>
+                                                            </tr>
+                                                            <% } %>
+                                                                <% } else { %>
+                                                                    <tr>
+                                                                        <td colspan="9">No products found.</td>
+                                                                    </tr>
+                                                                    <% } %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Add User Modal  -->
+                        <div class="modal fade modal-add-contact" id="addUser" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                <div class="modal-content">
+                                    <form>
+                                        <div class="modal-header px-4">
+                                            <h5 class="modal-title" id="exampleModalCenterTitle">Add New User</h5>
+                                        </div>
+
+                                        <div class="modal-body px-4">
+                                            <div class="form-group row mb-6">
+                                                <label for="coverImage" class="col-sm-4 col-lg-2 col-form-label">User
+                                                    Image</label>
+
+                                                <div class="col-sm-8 col-lg-10">
+                                                    <div class="custom-file mb-1">
+                                                        <input type="file" class="custom-file-input" id="coverImage"
+                                                            required>
+                                                        <label class="custom-file-label" for="coverImage">Choose
+                                                            file...</label>
+                                                        <div class="invalid-feedback">Example invalid custom file
+                                                            feedback
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-2">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="firstName">First name</label>
+                                                        <input type="text" class="form-control" id="firstName"
+                                                            value="John">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="lastName">Last name</label>
+                                                        <input type="text" class="form-control" id="lastName"
+                                                            value="Deo">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group mb-4">
+                                                        <label for="userName">User name</label>
+                                                        <input type="text" class="form-control" id="userName"
+                                                            value="johndoe">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group mb-4">
+                                                        <label for="email">Email</label>
+                                                        <input type="email" class="form-control" id="email"
+                                                            value="johnexample@gmail.com">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group mb-4">
+                                                        <label for="Birthday">Birthday</label>
+                                                        <input type="text" class="form-control" id="Birthday"
+                                                            value="10-12-1991">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group mb-4">
+                                                        <label for="event">Address</label>
+                                                        <input type="text" class="form-control" id="event"
+                                                            value="Address here">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer px-4">
+                                            <button type="button" class="btn btn-secondary btn-pill"
+                                                data-bs-dismiss="modal">Cancel</button>
+                                            <button type="button" class="btn btn-primary btn-pill">Save Contact</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- End Content -->
+                </div>
+            </div>
+
+
+            <!-- ===================== Product adding modal =================================== -->
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/admin/productList" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Product Name</label>
+              <input type="text" class="form-control" id="recipient-name" name="productName" required>
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Brand</label>
+              <select class="form-select mb-3" aria-label="Default select example" name="brand">
+                <option value="FireFox">Aleen Solly</option>
+                <option value="Hero">Peter Englend</option>
+                <option value="Hercules">LP</option>
+                <option value="Bsa">Butterfly</option>
+                <option value="Avon">Avon</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Size</label>
+              <select class="form-select mb-3" aria-label="Default select example" name="size">
+                <option value="Xs">Xs</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="Xl">Xl</option>
+                <option value="Xxl">Xxl</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Category</label>
+              <select class="form-select mb-3" aria-label="Default select example" name="category">
+                <% for(let i = 0;i < category.length; i++){
+                  %>
+                <option value="<%= category[i].categoryname%>">
+                  <%= category[i].categoryname %>
+                </option>
+                <%
+              }
+              %>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Image Upload</label>
+              <input class="form-control bg-dark" accept="Image/*" name="image" type="file" id="formFileMultiple" multiple required>
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Stock Quantity</label>
+              <input type="text" class="form-control" id="recipient-name" name="stockQuantity" required>
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Price</label>
+              <input type="text" class="form-control" id="recipient-name" name="price" required>
+            </div>
+            <div class="mb-3">
+              <label for="message-text" class="col-form-label">Discrption</label>
+              <textarea class="form-control" id="message-text" name="description" required></textarea>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Submit</button>
+           </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+            <%- include('../layouts/adminLayouts/footer.ejs') %>
