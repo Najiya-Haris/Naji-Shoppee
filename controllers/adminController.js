@@ -10,9 +10,8 @@ let message
 
 const loadLogin= async(req,res)=>{
     try{
-        //console.log('nice');
         res.render('login',{message})
-       // message=null
+      
     }catch(err){
         console.log(err.message);
     }
@@ -50,15 +49,6 @@ const verifyLogin= async(req,res)=>{
     }
 }
 
-// const loadDashboard = async (req, res) => {
-//     try {
-//       const userData = await usermodel.findById({ _id: req.session.user_id });
-//       res.render('dashboard', { admin: userData });
-//     } catch (error) {
-//       console.log(error.message);
-//     }
-//   };
-
 const loadDashboard = async (req, res) => {
     try {
      const adminData = await User.findById({ _id: req.session.Auser_id });
@@ -94,7 +84,6 @@ try{
   const block=async(req,res)=>{
     try{
         const userData=await User.findByIdAndUpdate(req.query.id,{$set:{is_block:true}});
-        //req.session.users=null
         res.redirect('/admin/userList')
     }catch(error){
         console.log(error.message);
@@ -104,7 +93,6 @@ try{
   const unblock=async(req,res)=>{
     try{
         const userData=await User.findByIdAndUpdate(req.query.id,{$set:{is_block:false}});
-       // req.session.users=null
         res.redirect('/admin/userList')
     }catch(error){
         console.log(error.message);
@@ -130,22 +118,11 @@ try{
        
       const adminid = req.session.Auser_id;
       const adminData = await User.findOne({ _id: adminid });
-
-      
-    //   if (!req.file) {
-    //     return res.render("bannerlist", {
-    //       message: "No file was uploaded",
-    //       admin: adminData,
-    //     });
-    //   }
-  
-     
       const banner = new Banner({
         
         
        
         banner_img: req.file.filename,
-        
         first_text: req.body.mainText,
         main_text: req.body.firstText,
         first_text2:req.body.firstText2,

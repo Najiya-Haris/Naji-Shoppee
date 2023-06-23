@@ -65,8 +65,7 @@ const updateCoupen = async(req,res,next)=>{
 
 //delete coupen
 
-const 
-deleteCoupen = async(req,res,next) =>{
+const deleteCoupen = async(req,res,next) =>{
     try {
         const id = req.body.id
         const deleteCoupen = await Coupen.deleteOne({_id:id})
@@ -88,7 +87,7 @@ const applyCoupen = async(req,res,next)=>{
     try {
       const code = req.body.code;
       const amount = Number(req.body.amount)
-      console.log(amount+"=="+code);
+
       const userExist = await Coupen.findOne({code:code,user:{$in:[req.session.user_id]}})
       if(userExist){
         res.json({user:true})
@@ -101,7 +100,6 @@ const applyCoupen = async(req,res,next)=>{
                 await Coupen.findOneAndUpdate({_id:coupendata._id},{$push:{user:req.session.user_id}}) 
                 const perAmount = Math.round((amount * coupendata.discountPercentage)/100 )
                 const disTotal =Math.round(amount - perAmount)
-                console.log(disTotal+"==="+perAmount);
                 return res.json({amountOkey:true,disAmount:perAmount,disTotal})
             }
         }

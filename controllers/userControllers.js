@@ -99,9 +99,9 @@ const loadVerfication = async(req,res,next)=>{
       try {
         const session = req.session.user_id;
         const productData = await product.find()
-        const banner= await Banner.findOne({})
+        const banner= await Banner.find({})
         const banners= await Banner.find().skip(1).limit(1)
-        console.log(banners);
+        console.log(banner);
         
         if (!session) {
           return res.render("home",{session:session,product:productData,banner,banners});

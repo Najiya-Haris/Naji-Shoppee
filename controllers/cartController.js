@@ -4,6 +4,7 @@ const Product = require("../Models/productModel");
 const Cart = require("../Models/cartModel");
 const Address=require('../Models/addressModel');
 const { render } = require("../routes/userRoute");
+const coupen=require('../Models/couponModel')
 
 
 const loadCart = async (req, res) => {
@@ -60,13 +61,15 @@ const loadCart = async (req, res) => {
 
 const addToCart = async (req, res) => {
     try {
-      const userId = req.session.user_id
+      const userId = req.session.user_id;
+      console.log(userId);
       const userData = await User.findOne({ _id: userId });
+     
       const productId = req.body.id;
       const productData = await Product.findOne({_id: productId});
-  
+      
       const cartData = await Cart.findOne({ userId: userId });
-  
+
       if (cartData) {
        
         const productExists = cartData.products.some(
@@ -193,6 +196,7 @@ const loadChekout = async(req,res)=>{
     const session = req.session.user_id
     const userData = await User.findOne ({_id:req.session.user_id});
     const addressData = await Address.findOne({userId:req.session.user_id});
+    const coupenData=await coupen.find({})
     const total = await Cart.aggregate([
       { $match: { userId: req.session.user_id } },
       { $unwind: "$products" },
@@ -211,13 +215,13 @@ const loadChekout = async(req,res)=>{
           if(addressData.addresses.length>0){
             const address = addressData.addresses
             
-            res.render('checkout-page',{session,Total,address,totalAmount})
+            res.render('checkout-page',{session,Total,address,totalAmount,user:userData,coupen:coupenData})
           }
           else{
-            res.render('empty-checkout',{session,Total,totalAmount})
+            res.render('empty-checkout',{session,Total,totalAmount,user:userData,coupen:coupenData})
           }
         }else{
-          res.render('empty-checkout',{session,Total,totalAmount});
+          res.render('empty-checkout',{session,Total,totalAmount,user:userData,coupen:coupenData});
         }
       }else{
         res.redirect('/')

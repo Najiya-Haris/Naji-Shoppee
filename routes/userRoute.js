@@ -79,6 +79,7 @@ user_route.get('/my-orders',orderController. loadMyOrder)
 user_route.post('/verify-payment',orderController. verifyPayment)
 user_route.get('/single-order-page/:id',orderController.loadSingleOrder)
 user_route.post('/cancel-order',orderController.orderCancel)
+user_route.post('/order-success/:id',orderController.loadOrderSuccess)
 
 
 user_route.post('/apply-coupon',couponController.applyCoupen)

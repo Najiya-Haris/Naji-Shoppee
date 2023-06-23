@@ -19,10 +19,8 @@ const placeOrder = async (req, res) => {
     const address = req.body.address;
     const cartData = await Cart.findOne({ userId: req.session.user_id });
     const products = cartData.products;
-   
     const total = parseInt(req.body.Total);
     const paymentMethod = req.body.payment;
-
     const status = paymentMethod === 'COD' ? 'placed' : 'pending';
 
     const order = new Order({
@@ -37,16 +35,43 @@ const placeOrder = async (req, res) => {
     });
 
     const orderData = await order.save();
-    if (orderData) {
-      for (let i = 0; i < products.length; i++) {
-        const pro = products[i].productid;
-        const count = products[i].count;
-        await Product.findByIdAndUpdate({ _id: pro }, { $inc: { quantity: -count } });
-      }
+    const orderid=order._id
+
+  
+     
+
+      if (orderData) {
+        //cash on delivery
       if (order.status === 'placed') {
         await Cart.deleteOne({ userId: req.session.user_id });
-        res.json({ codsuccess: true });
+        for (let i = 0; i < products.length; i++) {
+          const pro = products[i].productid;
+          const count = products[i].count;
+          await Product.findByIdAndUpdate({ _id: pro }, { $inc: { quantity: -count } });
+        }
+  
+        res.json({ codsuccess: true ,orderid});
       } else {
+      
+        //wallet payment
+        if(order.paymentMethod === 'Wallet-Payment'){
+          const wallet = userData.wallet
+          if(wallet >= total){
+            await Cart.deleteOne({ userId: req.session.user_id });
+            for (let i = 0; i < products.length; i++) {
+              const pro = products[i].productid;
+              const count = products[i].count;
+              await Product.findByIdAndUpdate({ _id: pro }, { $inc: { quantity: -count } });
+              await User.findOneAndUpdate({_id:req.session.user_id},{$inc:{wallet: -total}})
+              await Order.findOneAndUpdate({_id:order._id},{$set:{status:"placed"}});
+              res.json({ codsuccess: true ,orderid});
+            }
+          }else{
+            res.json({walletFailed:true});
+          }
+        }else{
+
+          //razor payment
         const orderId = orderData._id;
         const totalAmount = orderData.totalAmount;
         var options = {
@@ -60,6 +85,7 @@ const placeOrder = async (req, res) => {
           
         });
       }
+    } 
     } else {
       res.redirect('/');
     }
@@ -68,6 +94,38 @@ const placeOrder = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+  //verify payment from razorpay
+
+  const verifyPayment = async (req,res)=>{
+    try{
+      const cartData = await Cart.findOne({ userId: req.session.user_id });
+      const products = cartData.products;
+      const details = req.body
+      const crypto = require('crypto');
+      const hmac = crypto.createHmac('sha256', process.env.Razorpay_Key_Secret);
+      hmac.update(details.payment.razorpay_order_id + '|' + details.payment.razorpay_payment_id);
+      const hmacValue = hmac.digest('hex');
+    
+      if(hmacValue === details.payment.razorpay_signature){
+        for (let i = 0; i < products.length; i++) {
+          const pro = products[i].productid;
+          const count = products[i].count;
+          await Product.findByIdAndUpdate({ _id: pro }, { $inc: { quantity: -count } });
+        }
+        await Order.findByIdAndUpdate({_id:details.order.receipt},{$set:{status:"placed"}});
+        await Order.findByIdAndUpdate({_id:details.order.receipt},{$set:{paymentId:details.payment.razorpay_payment_id}});
+        await Cart.deleteOne({userId:req.session.user_id});
+        const orderid = details.order.receipt 
+        res.json({ codsuccess: true ,orderid});
+      }else{
+        await Order.findByIdAndRemove({_id:details.order.receipt});
+        res.json({success:false});
+      }
+    }catch(error){
+        console.log(error.message)
+   }
+  }
 
 //load order management
 
@@ -200,29 +258,21 @@ const loadOrderManagement = async(req,res) =>{
       console.log(error.message);
     }
   }
-
-  //verify payment from razorpay
-
-  const verifyPayment = async (req,res)=>{
-    try{
-      const details = req.body
-      const crypto = require('crypto');
-      const hmac = crypto.createHmac('sha256', process.env.Razorpay_Key_Secret);
-      hmac.update(details.payment.razorpay_order_id + '|' + details.payment.razorpay_payment_id);
-      const hmacValue = hmac.digest('hex');
-    
-      if(hmacValue === details.payment.razorpay_signature){
-        await Order.findByIdAndUpdate({_id:details.order.receipt},{$set:{status:"placed"}});
-        await Order.findByIdAndUpdate({_id:details.order.receipt},{$set:{paymentId:details.payment.razorpay_payment_id}});
-        await Cart.deleteOne({userId:req.session.user_id});
-        res.json({success:true});
-      }else{
-        await Order.findByIdAndRemove({_id:details.order.receipt});
-        res.json({success:false});
-      }
-    }catch(error){
-        console.log(error.message)
-   }
+  //load order success page
+  
+  const loadOrderSuccess = async(req,res)=>{
+    try {
+      const id = req.params.id
+      const session = req.session.user_id
+      const orderData = await Order.findOne({_id : id }).populate(
+        "products.productid"
+      );
+      const orderDate = orderData.date
+      const expectedDate  = new Date(orderDate.getTime() + (5 * 24 * 60 * 60 * 1000));
+      res.render('order-success', { session,orders:orderData,expectedDate});
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 
 
@@ -234,5 +284,6 @@ const loadOrderManagement = async(req,res) =>{
         loadOrderManagement,
         loadSingleDetails,
         changeStatus,
-        orderCancel
+        orderCancel,
+        loadOrderSuccess
     }

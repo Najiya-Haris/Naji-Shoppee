@@ -36,6 +36,15 @@ const productSchema = new mongoose.Schema({
         type:Boolean,
         default:false,
     },
+    percentage:{
+        type:Number,
+    },
+    discountPercentage:{
+        type:Number,
+    },
+    discountName:{
+        type:String,
+    },
 });
 
 const Product = mongoose.model('Product', productSchema);

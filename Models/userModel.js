@@ -29,6 +29,10 @@ const userSchema= new mongoose.Schema({
     is_verified:{
         type:Boolean,
         default:false,
+    },
+    wallet:{
+        type:Number,
+        default:0
     }
     
         
