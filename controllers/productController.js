@@ -3,6 +3,7 @@ const Product  = require('../Models/productModel');
 const User  = require('../Models/userModel');
 const Category = require('../Models/categoryModel');
 const fs = require('fs');
+const Sharp=require('sharp')
 const path = require('path')
 
 
@@ -26,7 +27,12 @@ const insertProduct = async (req, res) => {
         const images = [];
         if (req.files && req.files.length > 0) {
            for (let i = 0; i < req.files.length; i++) {
-            images.push(req.files[i].filename);
+            images[i]=req.files[i].filename ;
+            await Sharp('./public/adminAssets/adminImages/' +req.files[i].filename)  // added await to ensure image is resized before uploading
+            .resize(800, 800)
+            .toFile(
+              "./public/adminAssets/adminImages/productImage/" + req.files[i].filename
+            );
           }
         }
         const productName = req.body.productName.trim();
@@ -115,10 +121,17 @@ if(req.body.productName.trim() === "" || req.body.category.trim() === "" || req.
     res.render('editProductList',{admin:adminData,product: productData, message:"All fields required",category:categoryData})
 }else{
     try {
-        const arrayimg = []
-        for(file of req.files){
-            arrayimg.push(file.filename)
-        } 
+      const images = [];
+      if (req.files && req.files.length > 0) {
+         for (let i = 0; i < req.files.length; i++) {
+          images[i]=req.files[i].filename ;
+          await Sharp('./public/adminAssets/adminImages/' +req.files[i].filename)  // added await to ensure image is resized before uploading
+          .resize(800, 800)
+          .toFile(
+            "./public/adminAssets/adminImages/productImage/" + req.files[i].filename
+          );
+        }
+      }
         const id = req.params.id
        await Product.updateOne({_id:id},{$set:{
             productName:req.body.productName,
@@ -136,18 +149,20 @@ if(req.body.productName.trim() === "" || req.body.category.trim() === "" || req.
 }
 
 
+
 //  ------------- Delete image section
 const deleteimage = async(req,res)=>{
 try{
   const imgid = req.params.imgid;
   const prodid = req.params.prodid;
-  fs.unlink(path.join(__dirname,"../public/adminAssets/adminImages",imgid),()=>{})
+  fs.unlink(path.join(__dirname,"../public/adminAssets/adminImages/productImage/",imgid),()=>{})
   const productimg  = await  Product.updateOne({_id:prodid},{$pull:{image:imgid}})
   res.redirect('/admin/editProductList/'+prodid)
 }catch(error){
   console.log(error.message)
 }
 }
+
 
 
 //  ------------- Update image section

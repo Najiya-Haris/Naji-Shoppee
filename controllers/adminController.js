@@ -2,6 +2,8 @@ const User=require('../Models/userModel')
 const bcrypt=require('bcrypt')
 const session=require('express-session')
 const Banner=require('../Models/bannerModel')
+const Order=require('../Models/orderModel')
+const Product=require('../Models/productModel')
 
 const couponController = require('../controllers/couponController')
 
@@ -49,10 +51,130 @@ const verifyLogin= async(req,res)=>{
     }
 }
 
+
+//loading sales report page 
+
+const loadSalesReport = async(req,res) =>{
+  try {
+    const adminData = await User.findById({ _id: req.session.Auser_id });
+   const order = await Order.aggregate([
+  { $unwind: "$products" },
+  { $match: { 'products.status': 'Delivered' } },
+  { $sort: { date: -1 } },
+  {
+    $lookup: {
+      from: 'products',
+      let: { productId: { $toObjectId: '$products.productid' } },
+      pipeline: [
+        { $match: { $expr: { $eq: ['$_id', '$$productId'] } } }
+      ],
+      as: 'products.productDetails'
+    }
+  },
+  {
+    $addFields: {
+      'products.productDetails': { $arrayElemAt: ['$products.productDetails', 0] }
+    }
+  }
+]);
+    res.render("sales-report", { order ,admin:adminData });
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
 const loadDashboard = async (req, res) => {
     try {
+     
      const adminData = await User.findById({ _id: req.session.Auser_id });
-      res.render('dashboard',{admin: adminData});
+ 
+     const  userData = await User.find({is_block:false  })
+   
+     const orderData = await Order.find();
+ 
+     const productData = await Product.find({is_delete:false});
+    
+
+      //find total delivered sale
+
+    const result = await Order.aggregate([
+      { $unwind: "$products" },
+      { $match: { 'products.status': 'Delivered' } },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: '$products.totalPrice' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          total: 1
+        }
+      }
+    ]);
+    
+       
+    let total = 0
+    if (result.length > 0) {
+      const total = result[0].total;
+    } 
+  
+    
+
+
+    //total cod sale
+
+    const codResult = await Order.aggregate([
+      { $unwind: "$products" },
+      { $match: { 'products.status': 'Delivered', paymentMethod: 'COD' } },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: '$products.totalPrice' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          total: 1
+        }
+      }
+    ]);
+    
+    let codTotal = 0
+    if (codResult.length > 0) {
+      codTotal = codResult[0].total;
+    } 
+  
+
+    //total online payment and wallet
+    const onlineResult = await Order.aggregate([
+      { $unwind: "$products" },
+      { $match: { 'products.status': 'Delivered', 'paymentMethod': { $ne: 'COD' } } },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: '$products.totalPrice' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          total: 1
+        }
+      }
+    ]);
+    
+    let onlineTotal = 0;
+    if (onlineResult.length > 0) {
+      onlineTotal = onlineResult[0].total;
+    }
+    
+
+
+      res.render('dashboard',{admin: adminData,order:orderData,product:productData,user:userData,total,codTotal,onlineTotal});
     } catch (error) {
       console.log(error.message);
     }
@@ -163,5 +285,6 @@ module.exports={
     block,
     unblock,
     loadAddBanner,
-     addBanner
+     addBanner,
+     loadSalesReport
 }

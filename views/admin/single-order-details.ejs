@@ -99,16 +99,17 @@
                   <% if(order.status === 'cancelled') { %>
                     <p class="text-danger">cancelled</p>
                   <% } else { %>
-                    <div class="dropdown show">
-                      <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <%= order.status %>
-                      </a>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <a class="dropdown-item" onclick="changeStatus(this,'<%= order._id %>','<%=orders.userId %>')">shipped</a>
-                        <a class="dropdown-item" onclick="changeStatus(this,'<%= order._id %>','<%=orders.userId %>')">Out For Delivery</a>
-                        <a class="dropdown-item" onclick="changeStatus(this,'<%= order._id %>','<%=orders.userId %>')">Delivered</a>
-                      </div>
-                    </div>
+                    <div class="dropdown show" style="position: absolute !important;">
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <%= order.status %>
+                    </a>
+                    <div class="dropdown-menu"  aria-labelledby="dropdownMenuLink" style="top: 75px;">
+                      <a class="dropdown-item" onclick="changeStatus(this,'<%= order._id %>','<%=orders.userId %>')">shipped</a>
+                      <a class="dropdown-item" onclick="changeStatus(this,'<%= order._id %>','<%=orders.userId %>')">Out For Delivery</a>
+                      <a class="dropdown-item" onclick="changeStatus(this,'<%= order._id %>','<%=orders.userId %>')">Delivered</a>
+                      
+                    </div>     
+                  </div>
                   <% } %>
                 </td>
               </tr>

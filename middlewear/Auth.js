@@ -30,24 +30,27 @@ const isLogin = async (req, res, next) => {
 
   const isBlock =async(req,res,next)=>{
     try {
-      if(req.session.user_id ){
+      
       const userData= await userModel.findOne({_id:req.session.user_id}) 
-      if(userData.is_block==false && userData.is_admin==0){
+      if(userData){
+      if(userData.is_block==false){
         next()
-        console.log('blocked');
       }else{
-        console.log('not blked');
         req.session.destroy()
+        res.send("Sorry, you are blocked from accessing this page.");
         res.redirect("/")
       }
       }else{
-        next()
-        }
-    } catch (err) {
+        res.redirect("/")
+
+      }
+    
+   } catch (err) {
       console.log(err.message);
       next(err);
     }
   }
+  
   
   module.exports = {
     isLogin,

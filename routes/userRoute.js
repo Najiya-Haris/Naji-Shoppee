@@ -37,10 +37,10 @@ user_route.get('/verify',userController.loadVerfication)
 user_route.post('/verify',userController.verifyLoad)
 user_route.get('/reSend',userController.reSendMail)
 
-user_route.get('/product',userController.loadProducts)
+user_route.get('/product',Auth.isBlock,userController.loadProducts)
 
 user_route.get('/logout',Auth.isLogin,userController.userLogout);
-user_route.get('/singleProduct',productController.productDetails)
+user_route.get('/singleProduct',Auth.isBlock,productController.productDetails)
 
 user_route.get('/profile',Auth.isLogin,userController.loadProfile);
 

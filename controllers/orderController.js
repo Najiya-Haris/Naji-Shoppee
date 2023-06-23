@@ -237,7 +237,6 @@ const loadOrderManagement = async(req,res) =>{
     try {
       const id = req.body.id
       const userId = req.body.userId
-      console.log(userId);
       const statusChange = req.body.status
       const updatedOrder = await Order.findOneAndUpdate(
         {
@@ -251,6 +250,8 @@ const loadOrderManagement = async(req,res) =>{
         },
         { new: true }
       );
+      console.log(updatedOrder);
+
       if(updatedOrder){
         res.json({success:true})
       }

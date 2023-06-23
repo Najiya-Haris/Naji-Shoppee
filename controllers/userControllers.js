@@ -176,20 +176,20 @@ const insertUser=async(req,res,next)=>{
 const verifyLogin=async(req,res,next)=>{
     try{
         const email=req.body.email
-        console.log(email);
         const password=req.body.password
-        console.log(password);
-        const userData=await User.findOne({email:email,is_block:false})
+        const userData=await User.findOne({email:email})
         if(userData){
             const passwordMatch=await bcrypt.compare(password,userData.password)
             if(passwordMatch){
-              console.log(2435678);
+              if(userData.is_block){
+                res.render('login',{message:'user is blocked by admin'})
+
+              }else{
               req.session.user_id=userData._id
                 res.redirect('/')
-                
+              }
             }else{
                 res.render('login',{message:'email or password is incorrect'})
-                console.log('incorrect');
             }
         }else{
             res.render('login',{message:'email or password is incorrect'})

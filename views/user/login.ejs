@@ -139,6 +139,11 @@
                                   <a href="/"><button class="btn btn-primary"  type="submit">Login</button></a>  
                                     <a href="/register" class="btn btn-secondary">Register</a>
                                 </span>
+                                <% if (typeof message !=='undefined' ) { %>
+                                    <p style="text-align: center;color: red;">
+                                      <%= message %>
+                                    </p>
+                                    <% } %>
                             </form>
                         </div>
                     </div>

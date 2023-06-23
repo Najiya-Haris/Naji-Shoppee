@@ -39,6 +39,9 @@ admin_route.get('/userList',Auth.isLogin,adminController.newUserLoad);
 admin_route.get('/blockUser',Auth.isLogin,adminController.block)
 admin_route.get('/unblockUser',Auth.isLogin,adminController.unblock)
 
+admin_route.get("/sales-report", Auth.isLogin, adminController.loadSalesReport);
+
+
 
 
 admin_route.get('/order-management',Auth.isLogin, orderController.loadOrderManagement)
@@ -61,6 +64,9 @@ admin_route.get('/editProductList/:id',Auth.isLogin,productController.editproduc
 admin_route.post("/editproductList/:id", update.upload.array("image", 10), productController.updateProduct);
 admin_route.get('/deleteimg/:imgid/:prodid',Auth.isLogin,productController. deleteimage);
 admin_route.post("/editproduct/updateimage/:id", update.upload.array("image"), productController.updateimage);
+
+
+admin_route.post('/changeStatus',orderController.changeStatus)
 
 
 
