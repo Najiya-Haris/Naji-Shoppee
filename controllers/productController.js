@@ -1,4 +1,4 @@
-const { model } = require("mongoose");
+const { model, Error } = require("mongoose");
 const Product  = require('../Models/productModel');
 const User  = require('../Models/userModel');
 const Category = require('../Models/categoryModel');
@@ -94,7 +94,7 @@ const productDetails = async(req,res) => {
 }
 
 //  ------------- Edit product  section
-const editproduct = async(req,res) => {
+const editproduct = async(req,res,next) => {
   
   try {
    
@@ -106,13 +106,13 @@ const editproduct = async(req,res) => {
     const adminData = await User.findById({_id:req.session.Auser_id})
      res.render('editProductList',{admin:adminData,activePage: 'productList',category:categoryData,product:productData})
   } catch (error) {
-      console.log(error.message);
+     next(error)
   }
 }
 
 
 //  ------------- Update product  section
-const updateProduct = async (req,res) =>{
+const updateProduct = async (req,res,next) =>{
 if(req.body.productName.trim() === "" || req.body.category.trim() === "" || req.body.description.trim() === "" || req.body.StockQuantity.trim() === "" || req.body.price.trim() === "") {
     const id = req.params.id
     const productData = await Product.findOne({_id:id}).populate('category')
@@ -139,11 +139,13 @@ if(req.body.productName.trim() === "" || req.body.category.trim() === "" || req.
             stockQuantity:req.body.StockQuantity,
             price:req.body.price,
             description:req.body.description,
-            brand:req.body.brand
+            brand:req.body.brand,
+            discountPercentage:req.body.percentage,
+            discountName:req.body.discountname,
         }})
         res.redirect('/admin/productList')
     } catch (error) {
-        console.log(error.message);
+       next(error)
     }
 }
 }
@@ -151,7 +153,7 @@ if(req.body.productName.trim() === "" || req.body.category.trim() === "" || req.
 
 
 //  ------------- Delete image section
-const deleteimage = async(req,res)=>{
+const deleteimage = async(req,res,next)=>{
 try{
   const imgid = req.params.imgid;
   const prodid = req.params.prodid;
@@ -159,14 +161,14 @@ try{
   const productimg  = await  Product.updateOne({_id:prodid},{$pull:{image:imgid}})
   res.redirect('/admin/editProductList/'+prodid)
 }catch(error){
-  console.log(error.message)
+  next(error)
 }
 }
 
 
 
 //  ------------- Update image section
-const updateimage = async (req, res) => {
+const updateimage = async (req, res,next) => {
 try {
   const id = req.params.id
   
@@ -195,7 +197,7 @@ try {
     res.redirect("/admin/editProductList/")
   }
 } catch (error) {
-  console.log(error.message);
+ next(error)
 }
 }
     

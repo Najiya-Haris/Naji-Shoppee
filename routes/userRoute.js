@@ -7,7 +7,10 @@ const cartController = require('../controllers/cartController')
 const orderController = require('../controllers/orderController')
 const addressController = require('../controllers/addressController')
 const couponController = require('../controllers/couponController')
+const wishlistController=require('../controllers/wishlistController')
 const config=require('../config/config')
+// const errorHandler = require('../middlewear/errorHandler');
+
 // user_route.use(session({
 //     secret:config.sessionSecret,
 //     resave:false,
@@ -22,6 +25,7 @@ user_route.use(bodyParser.json())
 user_route.use(bodyParser.urlencoded({ extended: true }))
 
 const userController=require('../controllers/userControllers')
+const errorHandler = require('../middlewear/errorHandler')
 
 
 user_route.get('/',userController.loadHome)
@@ -48,7 +52,7 @@ user_route.post('/update-user',Auth.isLogin,userController.updateUser)
 
 
 
-user_route.get('/forget',Auth.isBlock,userController.forgetLoad)
+user_route.get('/fgtp',Auth.isBlock,userController.forgetLoad)
 
 user_route.get('/loadchange',Auth.isBlock,userController.loadchangePasswod )
 user_route.post('/forget',Auth.isBlock,userController.forgetVerify)
@@ -80,9 +84,15 @@ user_route.post('/verify-payment',orderController. verifyPayment)
 user_route.get('/single-order-page/:id',orderController.loadSingleOrder)
 user_route.post('/cancel-order',orderController.orderCancel)
 user_route.post('/order-success/:id',orderController.loadOrderSuccess)
+user_route.post('/return-order',orderController.orderReturn)
 
 
 user_route.post('/apply-coupon',couponController.applyCoupen)
+user_route.post('/addreview',userController.addReview)
+
+user_route.get('/wishlist',wishlistController.  loadwishlist)
+user_route.post('/addtoWishlist',wishlistController.addToWishlist)
+user_route.get('/delete-wishlist',Auth.isLogin,wishlistController.deleteWishlist)
 
 
 module.exports=user_route;

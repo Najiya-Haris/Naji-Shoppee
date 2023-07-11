@@ -34,8 +34,9 @@
                                                         <th>main text</th>
                                                        
                                                         <th>description</th>
-                                                        <th>maintext2</th>
-                                                        <th>description2</th>
+                                        
+                                                        <th>action</th>
+
                                                        
                                                     </tr>
                                                 </thead>
@@ -61,23 +62,17 @@
                                                                     <%= banner[i].first_text %>  
   
                                                                 </td>
-                                                                <td>
-                                                                    <%= banner[i].main_text2 %>  
-                                                                  </td>
-                                                                  <td>
-                                                                      <%= banner[i].first_text2 %>  
+                                                                
+                                                                  
+                                                                       <td>
     
-                                                                  </td>
-
-                                                             
-                                                                <td>
-                                                                    <a href="" onclick="return confirm('Are you sure you want to delete ?')">
+                                                                
+                                                                    <a href="/admin/deleteBanner?id=<%= banner[i]._id %>" onclick="return confirm('Are you sure you want to delete <%= banner[i]._id%>?')">
                                                                         <button type="button" class="btn btn-danger m-2" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Delete</button>
                                                                       </a>
-                                                                      <a href="">
+                                                                      <a href="/admin/editBannerlist/<%= banner[i]._id %>">
                                                                         <button type="button" class="btn btn-success m-2"  >EDIT</button>
                                                                       </a>
-
                                                               </td>
                                                             </tr>
                                                             <% } %>
@@ -198,50 +193,12 @@
         <div class="modal-body">
             <form action="/admin/bannerlist" method="post" enctype="multipart/form-data">
 
-            <!-- <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Product Name</label>
-              <input type="text" class="form-control" id="recipient-name" name="productName" required>
-            </div> -->
-            <!-- <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Brand</label>
-              <select class="form-select mb-3" aria-label="Default select example" name="brand">
-                <option value="FireFox">Aleen Solly</option>
-                <option value="Hero">Peter Englend</option>
-                <option value="Hercules">LP</option>
-                <option value="Bsa">Butterfly</option>
-                <option value="Avon">Avon</option>
-              </select>
-            </div> -->
-            <!-- <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Size</label>
-              <select class="form-select mb-3" aria-label="Default select example" name="size">
-                <option value="Xs">Xs</option>
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="Xl">Xl</option>
-                <option value="Xxl">Xxl</option>
-              </select>
-            </div> -->
-            <!-- <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Category</label>
-              <select class="form-select mb-3" aria-label="Default select example" name="category">
-               
-              </select>
-            </div> -->
+           
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label">Image Upload</label>
               <input class="form-control bg-dark" accept="Image/*" name="bannerImage" type="file" id="formFileMultiple">
             </div>
-            <!-- <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Image Upload2</label>
-                <input class="form-control bg-dark" accept="Image/*" name="bannerImage" type="file" id="formFileMultiple">
-              </div> -->
             
-            <!-- <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Stock Quantity</label>
-              <input type="text" class="form-control" id="recipient-name" name="stockQuantity" required>
-            </div> -->
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label">main text</label>
               <input type="text" class="form-control" id="recipient-name" name="mainText" required>

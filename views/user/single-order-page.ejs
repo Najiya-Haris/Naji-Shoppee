@@ -59,7 +59,7 @@
                         <tr>
                             <td>
                                 <img width="50px" height="50px" src="/adminAssets/adminImages/<%= order.productid.image[0] %>" alt="">
-                                <%= order.productid.productname %>
+                                <%= order.productid.productName %>
                             </td>
                             <td><%= order.count %></td>
                             <td><%= order.productid._id %></td>
@@ -68,12 +68,52 @@
                             <td>
                                 <% if (order.status === 'cancelled') { %>
                                 <% } else if (order.status === 'Delivered') { %>
-                                <button class="btn-outline-dark">Return</button>
+                                    <%
+                                    const todayDate = new Date();
+                                    const expiryDate = new Date(order.deliveredDate);
+                                    expiryDate.setDate(expiryDate.getDate() + 7);
+                                    const dateDiff = expiryDate.getTime() - todayDate.getTime();
+                                    const daysDiff = Math.ceil(dateDiff / (1000 * 60 * 60 * 24));
+                                    %>
+
+                                    <% if (todayDate >= expiryDate) { %>
+                                    <p>Return Expired</p>
+                                    <% } else { %>
+                                    <button data-bs-toggle="modal" data-bs-target="#returnModal-<%= order._id %>" class="btn btn-outline-danger">Return</button><br>
+                                    <span><%= daysDiff %> days left until return expires</span>
+                                    <% } %>
                                 <% } else { %>
                                 <button onclick="cancelOrder('<%= order._id %>')" class="btn btn-outline-danger">Cancel</button>
                                 <% } %>
                             </td>
                         </tr>
+
+                        <!-- return Modal -->
+                        <div class="modal fade" id="returnModal-<%= order._id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <form action="/return-order" method="post">
+                                    <input type="hidden" value="<%= order._id %>" name="orderid">
+                                    <input type="hidden" value="<%= orders._id %>" name="ordersid">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Are You Sure Want To Return</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <textarea name="reason" rows="3"  placeholder="enter your reason" required></textarea>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-danger  btn-lg">Return</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- End return Modal -->
+
+
                         <% }) } %>
                     </tbody>
                 </table>

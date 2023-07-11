@@ -8,6 +8,7 @@ const product = require('../Models/productModel')
 const category=require('../Models/categoryModel')
 const { isBlock } = require('../middlewear/Auth')
 const Banner=require('../Models/bannerModel')
+const Order = require('../Models/orderModel')
 
 let otp;
 
@@ -101,7 +102,7 @@ const loadVerfication = async(req,res,next)=>{
         const productData = await product.find()
         const banner= await Banner.find({})
         const banners= await Banner.find().skip(1).limit(1)
-        console.log(banner);
+     
         
         if (!session) {
           return res.render("home",{session:session,product:productData,banner,banners});
@@ -461,6 +462,31 @@ const filterCategory = async (req, res) => {
 };
 
 
+const addReview=async(req,res)=>{
+  try{
+    const session = req.session.user_id
+      const name = req.body.name
+      const content=req.body.review
+      const star=req.body.rating
+      const id=req.query.id
+      const prid=req.body.prid
+      console.log(id);
+      const user = await Order.find({userId:session})
+      await product.findByIdAndUpdate(id ,{$push:{
+        product_review:{
+          user_name:name,
+          review:content,
+          star:star
+        }
+      }},{ new: true, upsert: true })
+
+      res.redirect('/singleProduct?id='+prid)
+  }catch(error){
+      console.log(error.message);
+  }
+}
+
+
 
 
 module.exports={
@@ -484,6 +510,7 @@ module.exports={
     changePassword ,
     filterCategory ,
     updateUser,
-    reSendMail
+    reSendMail,
+    addReview
     
 }

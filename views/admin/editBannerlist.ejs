@@ -1,0 +1,94 @@
+<!-- partial -->
+<%- include('../layouts/adminLayouts/header.ejs') %>
+  <%- include('../layouts/adminLayouts/navbar.ejs') %>
+    <%- include('../layouts/adminLayouts/sidebar.ejs') %>
+      <div class="ec-page-wrapper">
+
+        <div class="ec-content-wrapper ">
+          <div class="content">
+            <div class="main-panel">
+              <div class="content-wrapper">
+                <div class="row">
+                  <div class="col-12 grid-margin stretch-card">
+                    <div class="card">
+                      <div class="card-body">
+                        <h4 class="card-title">EDIT BANNER</h4>
+
+                        <form class="form-sample" action="" method="post" enctype="multipart/form-data">
+
+                          <div class="row">
+                            <div class="col-md-6">
+                              <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">first text</label>
+                                <div class="col-sm-9">
+                                  <input type="text" class="form-control" name="firstText"
+                                    value="<%= Banner.first_text %>" />
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+                          <div class="row">
+                            
+                            <div class="col-md-6">
+                              <div class="form-group row">
+                               
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-6">
+                              
+                              <div class="form-group">
+                                <label>File upload</label>
+                                <div class="input-group col-xs-12">
+                                  
+                                    <img src="/adminAssets/adminImages/<%= Banner.banner_img %>" alt="" width="100px" height="50">
+                                   
+                                </div>
+                                <div class="mb-3">
+                                  <label for="recipient-name" class="col-form-label">Change image</label>
+                                  <input class="form-control bg-secondary" accept="Image/*" name="bannerImage" type="file" id="formFileMultiple">
+                                </div>
+                              </div>
+                              <input type="hidden" value="<%= Banner.banner_img %>">
+                               
+                              <div class="form-group row">
+                             
+                                <div class="col-sm-9">
+                                 
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-6">
+                              <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">description</label>
+                                <div class="col-sm-9">
+                                  <input type="text" class="form-control" name="mainText"
+                                    value="<%= Banner.main_text %>" />
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group row">
+                               
+                                <div class="col-sm-9">
+                                  <!-- <input type="text" class="form-control" name="description"/> -->
+                                  <input class="form-control" name="description" value="<%= Banner.description %>">
+                                </div>
+                              </div>
+                            </div>
+                          </div><br>
+                          <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                          <a type="button" class="btn btn-dark" href="/admin/bannerlist">Cancel</a>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+           
+            <%- include('../layouts/adminLayouts/footer.ejs') %>

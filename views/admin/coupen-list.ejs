@@ -70,6 +70,11 @@
 						<div class="col-12">
 							<div class="ec-vendor-list card card-default">
 								<div class="card-body">
+                  <% if (typeof message !=='undefined' ) { %>
+                    <p style="text-align: center;color: red;">
+                      <%= message %>
+                    </p>
+                    <% } %>
 									<div class="table-responsive">
 										<table id="responsive-data-table" class="table">
 											<thead>

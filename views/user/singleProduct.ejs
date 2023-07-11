@@ -110,14 +110,14 @@
                                 <button class="dropdown-toggle" data-bs-toggle="dropdown"><img
                                         src="assets/images/icons/user.svg" class="svg_img header_svg" alt="" /></button>
                                 <ul class="dropdown-menu dropdown-menu-right">
-                                    <li><a class="dropdown-item" href="register.html">Register</a></li>
-                                    <li><a class="dropdown-item" href="checkout.html">Checkout</a></li>
-                                    <li><a class="dropdown-item" href="login.html">Login</a></li>
+                                    <li><a class="dropdown-item" href="/register">Register</a></li>
+                                   
+                                    <li><a class="dropdown-item" href="/login">Login</a></li>
                                 </ul>
                             </div>
                             <!-- Header User End -->
                             <!-- Header Cart Start -->
-                            <a href="wishlist.html" class="ec-header-btn ec-header-wishlist">
+                            <a href="/wishlist" class="ec-header-btn ec-header-wishlist">
                                 <div class="header-icon"><img src="assets/images/icons/wishlist.svg"
                                         class="svg_img header_svg" alt="" /></div>
                                 <span class="ec-header-count">4</span>
@@ -175,14 +175,13 @@
                                     <button class="dropdown-toggle" data-bs-toggle="dropdown"><img
                                             src="assets/images/icons/user.svg" class="svg_img header_svg" alt="" /></button>
                                     <ul class="dropdown-menu dropdown-menu-right">
-                                        <li><a class="dropdown-item" href="register.html">Register</a></li>
-                                        <li><a class="dropdown-item" href="checkout.html">Checkout</a></li>
-                                        <li><a class="dropdown-item" href="login.html">Login</a></li>
+                                        <li><a class="dropdown-item" href="/register">Register</a></li>
+                                        <li><a class="dropdown-item" href="/login">Login</a></li>
                                     </ul>
                                 </div>
                                 <!-- Header User End -->
                                 <!-- Header wishlist Start -->
-                                <a href="wishlist.html" class="ec-header-btn ec-header-wishlist">
+                                <a href="/wishlist" class="ec-header-btn ec-header-wishlist">
                                     <div class="header-icon"><img src="assets/images/icons/wishlist.svg"
                                             class="svg_img header_svg" alt="" /></div>
                                     <span class="ec-header-count">4</span>
@@ -391,7 +390,7 @@
                                     <ul class="sub-menu">
                                         <li><a href="user-profile.html">User Profile</a></li>
                                         <li><a href="user-history.html">User History</a></li>
-                                        <li><a href="wishlist.html">Wishlist</a></li>
+                                        <li><a href="/wishlist">Wishlist</a></li>
                                         <li><a href="track-order.html">Track Order</a></li>
                                         <li><a href="user-invoice.html">User Invoice</a></li>
                                     </ul>
@@ -690,7 +689,7 @@
                                                 <button class="btn btn-primary" onclick="addtocart('<%=product._id%>')">Add To Cart</button>
                                             </div>
                                             <div class="ec-single-wishlist">
-                                                <a class="ec-btn-group wishlist" title="Wishlist"><img
+                                                <a onclick="addWishlist('<%=product._id%>')" class="ec-btn-group wishlist" title="Wishlist"><img
                                                         src="assets/images/icons/wishlist.svg" class="svg_img pro_svg"
                                                         alt="" /></a>
                                             </div>
@@ -720,7 +719,45 @@
                                 <div id="ec-spt-nav-details" class="tab-pane fade show active">
                                     <div class="ec-single-pro-tab-desc">
                                       
-                                        </p>
+                                        <form action="/addreview?id=<%= product._id  %>" class="w-full" method="post">
+                                            <h5 class="mtext-108 cl2 p-b-7">
+                                            Add a review
+                                            </h5>
+                                            <input type="hidden" name="prid" value="<%= product._id  %>">
+                                            <p class="stext-102 cl6">
+                                            Your email address will not be published. Required fields are marked *
+                                            </p>
+                                            <div class="flex-w flex-m p-t-50 p-b-23">
+                                            <span class="stext-102 cl3 m-r-16">
+                                              Your Rating
+                                            </span>
+                                            <span class="wrap-rating fs-18 cl11 pointer">
+                                              <i class="item-rating pointer zmdi zmdi-star-outline"></i>
+                                              <i class="item-rating pointer zmdi zmdi-star-outline"></i>
+                                              <i class="item-rating pointer zmdi zmdi-star-outline"></i>
+                                              <i class="item-rating pointer zmdi zmdi-star-outline"></i>
+                                              <i class="item-rating pointer zmdi zmdi-star-outline"></i>
+                                              <input class="dis-none" type="number" name="rating">
+                                            </span>
+                                            </div>
+                                            <div class="row p-b-25">
+                                            <div class="col-12 p-b-5">
+                                              <label class="stext-102 cl3" for="review">Your review</label>
+                                              <textarea class="size-110 bor8 stext-102 cl2 p-lr-20 p-tb-10" id="review" name="review"></textarea>
+                                            </div>
+                                            <div class="col-sm-6 p-b-5">
+                                              <label class="stext-102 cl3" for="name">Name</label>
+                                              <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="name" type="text" name="name">
+                                            </div>
+                                            <div class="col-sm-6 p-b-5">
+                                              <label class="stext-102 cl3" for="email">Email</label>
+                                              <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="email" type="text" name="email">
+                                            </div>
+                                            </div>
+                                            <button class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 m-b-10" type="submit">
+                                            Submit
+                                            </button>
+                                          </form>
                                         
                                     </div>
                                 </div>
@@ -729,6 +766,9 @@
                                      
                                     </div>
                                 </div>
+
+
+                                
 
                                 <div id="ec-spt-nav-review" class="tab-pane fade">
                                     <div class="row">
@@ -820,9 +860,28 @@
                         })
                     }
                 }
-            })
-        }
-
+            })}
+            function addWishlist(id){
+                
+               $.ajax({
+             
+                url:'/addtoWishlist',
+                method:'post',
+                data: {
+                        proId:id
+                    },
+                    success: (response) => {
+                        swal.fire({
+                            positon: 'center',
+                            icon: "success",
+                            title: 'product added to wishlist',
+                            showConfirmButton: false,
+                            timer: 1500,
+                        })
+                        } 
+               })
+            }
+        
 
     </script>
 

@@ -71,6 +71,11 @@
                                                                     alt="Product image" width="250px" height="300px" />
 
                                                             </a>
+                                                            <% if ( product[i].discountPercentage <= 0) {
+                                                                
+                                                            }else{  %>
+                                                            <span class="percentage"><%= product[i].discountPercentage %>%</span>
+                                                             <% } %>
                                                           
 
                                                             <div class="ec-pro-actions">
@@ -80,7 +85,7 @@
                                                                         src="assets/images/icons/cart.svg"
                                                                         class="svg_img pro_svg" alt="" /> Add To
                                                                     Cart</button>
-                                                                <a class="ec-btn-group wishlist" title="Wishlist"><img
+                                                                <a href="/wishlist" class="ec-btn-group wishlist" title="Wishlist"><img
                                                                         src="assets/images/icons/wishlist.svg"
                                                                         class="svg_img pro_svg" alt="" /></a>
                                                             </div>
@@ -97,13 +102,31 @@
 
                                                         <div class="ec-pro-list-desc"></div>
                                                         <span class="ec-price">
-                                                            <span class="new-price">$ <%= product[i].price %>.00</span>
+                                                            <% 
+                                                              const discount =  product[i].discountPercentage 
+
+                                                               const price =  product[i].price 
+
+                                                               const disAmount = Math.round((price*discount)/100)
+
+                                                               const total = price - disAmount
+
+
+                                                            %>
+                                                            <% if(disAmount <= 0) {%>
+                                                            <span class="new-price">₹ <%= product[i].price %>.00</span>
+                                                            <% }else{ %>
+                                                                <del class="new-price text-danger">₹ <%= product[i].price %>.00</del> 
+                                                                <span class="new-price">₹ <%= total %>.00</span>
+
+                                                                <% } %>
                                                         </span>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <% } } %>
+
 
                                 </div>
                             </div>

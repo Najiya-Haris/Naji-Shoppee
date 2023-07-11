@@ -13,7 +13,7 @@ const razorpay = require('razorpay')
 
 //place order
 
-const placeOrder = async (req, res) => {
+const placeOrder = async (req, res,next) => {
   try {
     const userData = await User.findOne({ _id: req.session.user_id });
     const address = req.body.address;
@@ -90,14 +90,14 @@ const placeOrder = async (req, res) => {
       res.redirect('/');
     }
   } catch (error) {
-    console.log(error.message);
+  next(error)
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
   //verify payment from razorpay
 
-  const verifyPayment = async (req,res)=>{
+  const verifyPayment = async (req,res,next)=>{
     try{
       const cartData = await Cart.findOne({ userId: req.session.user_id });
       const products = cartData.products;
@@ -123,13 +123,13 @@ const placeOrder = async (req, res) => {
         res.json({success:false});
       }
     }catch(error){
-        console.log(error.message)
+      next(error)
    }
   }
 
 //load order management
 
-const loadOrderManagement = async(req,res) =>{
+const loadOrderManagement = async(req,res,next) =>{
   try {
     const adminData = await User.findById(req.session.Auser_id)
     const orderData = await Order.find().populate("products.productid").sort({ date: -1 });
@@ -137,14 +137,14 @@ const loadOrderManagement = async(req,res) =>{
     res.render('order-management',{admin:adminData,order:orderData})
     
   } catch (error) {
-    console.log(error,message);
+   next(error)
   }
 }
 
 
   //single order detail page in adminside
 
-  const loadSingleDetails = async(req,res)=>{
+  const loadSingleDetails = async(req,res,next)=>{
     try {
       const id = req.params.id
       const adminData = await User.findById(req.session.Auser_id)
@@ -155,13 +155,13 @@ const loadOrderManagement = async(req,res) =>{
       const expectedDate  = new Date(orderDate.getTime() + (5 * 24 * 60 * 60 * 1000));
       res.render('single-order',{ admin:adminData,orders:orderData,expectedDate});
     } catch (error) {
-      console.log(error.message);
+     next(error)
     }
   }
 
  //load my order
 
-  const loadMyOrder = async (req, res) => {
+  const loadMyOrder = async (req, res,next) => {
     try {
       const session = req.session.user_id;
       const user = await User.findById(session);
@@ -171,14 +171,14 @@ const loadOrderManagement = async(req,res) =>{
   
       res.render('my-orders', { session, user, orderProducts,orderData });
     } catch (error) {
-      console.log(error.message);
+  next(error)
     }
   };
 
 
   //single order page loading
 
-  const loadSingleOrder = async(req,res)=>{
+  const loadSingleOrder = async(req,res,next)=>{
     try {
       const id = req.params.id
       const session = req.session.user_id
@@ -189,13 +189,52 @@ const loadOrderManagement = async(req,res) =>{
       const expectedDate  = new Date(orderDate.getTime() + (5 * 24 * 60 * 60 * 1000));
       res.render('single-order-page', { session,orders:orderData,expectedDate});
     } catch (error) {
-      console.log(error.message);
+      next(error)
     }
   }
 
+  const orderReturn = async (req, res,next) => {
+    try {
+      const id = req.body.orderid;
+      const reason = req.body.reason
+      const ordersId = req.body.ordersid;
+      const Id = req.session.user_id
+      const orderData = await Order.findOne({ userId: Id, 'products._id': id})
+      const product = orderData.products.find((p) => p._id.toString() === id);
+      const cancelledAmount = product.totalPrice  
+      const proId = product.productid 
+      const proCount = product.count
+      const updatedOrder = await Order.findOneAndUpdate(
+        {
+          userId:Id,
+          'products._id': id
+        },
+        {
+          $set: {
+            'products.$.status': 'returned',
+            'products.$.returnReason': reason
+          }
+        },
+        { new: true }
+      );
+
+      if (updatedOrder) {
+        await Product.findByIdAndUpdate(proId,{$inc:{StockQuantity:proCount}})
+        await User.findByIdAndUpdate({_id:req.session.user_id},{$inc:{wallet:cancelledAmount}})
+        await Order.findOneAndUpdate({userId:req.session.user_id,'products._id': id},{$inc:{'products.$.totalPrice':-cancelledAmount}})
+        await Order.findOneAndUpdate({userId:req.session.user_id,'products._id': id},{$inc:{totalAmount:-cancelledAmount}})
+        res.redirect("/single-order-page/" + ordersId)
+      } else {
+        res.redirect("/single-order-page/" + ordersId)
+      }
+    } catch (error) {
+     next(error)
+    }
+  };
+
   //order canceling
 
-  const orderCancel = async (req, res) => {
+  const orderCancel = async (req, res,next) => {
     try {
       const id = req.body.id;
       const userData = await Order.findById(req.session.user_id)
@@ -227,13 +266,13 @@ const loadOrderManagement = async(req,res) =>{
         res.json({ success: false });
       }
     } catch (error) {
-      console.log(error.message);
+    next(error)
     }
   };
 
   //changing order status
 
-  const changeStatus = async(req,res) =>{
+  const changeStatus = async(req,res,next) =>{
     try {
       const id = req.body.id
       const userId = req.body.userId
@@ -250,18 +289,32 @@ const loadOrderManagement = async(req,res) =>{
         },
         { new: true }
       );
-      console.log(updatedOrder);
+      
+      if(statusChange === 'Delivered'){
+        const updatedDate = await Order.findOneAndUpdate(
+          {
+            userId: userId,
+            'products._id': id
+          },
+          {
+            $set: {
+              'products.$.deliveredDate': new Date()
+            }
+          },
+          { new: true }
+        );
+      }
 
       if(updatedOrder){
         res.json({success:true})
       }
     } catch (error) {
-      console.log(error.message);
+     next(error)
     }
   }
   //load order success page
   
-  const loadOrderSuccess = async(req,res)=>{
+  const loadOrderSuccess = async(req,res,next)=>{
     try {
       const id = req.params.id
       const session = req.session.user_id
@@ -272,7 +325,7 @@ const loadOrderManagement = async(req,res) =>{
       const expectedDate  = new Date(orderDate.getTime() + (5 * 24 * 60 * 60 * 1000));
       res.render('order-success', { session,orders:orderData,expectedDate});
     } catch (error) {
-      console.log(error.message);
+      next(error)
     }
   }
 
@@ -286,5 +339,6 @@ const loadOrderManagement = async(req,res) =>{
         loadSingleDetails,
         changeStatus,
         orderCancel,
-        loadOrderSuccess
+        loadOrderSuccess,
+        orderReturn
     }

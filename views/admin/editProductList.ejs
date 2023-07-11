@@ -108,6 +108,16 @@
                               </div>
                             </div>
                           </div><br>
+                          
+    <label>DISCOUNT PERCENTAGE</label>
+    <input type="text" class="form-control form-control-lg" name="percentage"
+      value="<%= product.discountPercentage %>" required>
+    <br><br>
+
+    <label>DISCOUNT NAME</label>
+    <input type="text" class="form-control form-control-lg" name="discountname"
+      value="<%= product.discountName %>" required>
+    <br><br>
                           <button type="submit" class="btn btn-primary mr-2">Submit</button>
                           <a type="button" class="btn btn-dark" href="/admin/productList">Cancel</a>
                         </form>

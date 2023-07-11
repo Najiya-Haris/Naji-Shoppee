@@ -118,8 +118,9 @@ const loadDashboard = async (req, res) => {
        
     let total = 0
     if (result.length > 0) {
-      const total = result[0].total;
+       total =+ result[0].total;
     } 
+
   
     
 
@@ -235,7 +236,7 @@ try{
     }
   }
 
-  const addBanner = async (req, res) => {
+  const addBanner = async (req, res,next) => {
     try {
        
       const adminid = req.session.Auser_id;
@@ -268,10 +269,109 @@ try{
         });
       }
     } catch (err) {
-      console.log(err.message);
+     next(err)
     }
   };
+  // ------------ Delete banner section
+const deleteBanner = async (req,res)=> {
+  try{
+    const id = req.query.id; 
+    const banner =   await Banner.deleteOne({ _id: id }, { $set: { is_delete: true } });
+    res.redirect('/admin/bannerlist');
+
+  }catch(error){
+    console.log(error.message);
+  }
+}
   
+
+//  ------------- Edit product  section
+const editBanner = async(req,res) => {
+  
+  try {
+    const id = req.params.id
+    const bannerData = await Banner.findOne({_id:id})
+    const adminData = await User.findById({_id:req.session.Auser_id})
+     res.render('editBannerlist',{admin:adminData,Banner:bannerData})
+  } catch (error) {
+      console.log(error.message);
+  }
+}
+
+
+const updateBanner = async (req,res) =>{
+  try {
+    const id = req.params.id;
+   
+ 
+    const text = req.body.mainText;
+
+    const description=req.body.firstText;
+  
+
+    let image = req.body.bannerImage;
+    if (req.file) {
+      image = req.file.filename;
+    }
+    await Banner.findOneAndUpdate(
+      { _id: id },
+      {
+        $set: {
+         first_text : text,
+        main_text:description,
+       banner_img: image,
+        },
+      }
+    );
+    res.redirect("/admin/bannerlist");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
+const rangeSort = async(req,res) =>{
+  try {
+    const adminData = await User.findById({ _id: req.session.Auser_id });
+    const from = new Date(req.body.from)
+    const to = new Date(req.body.to) 
+    console.log(from+'==='+to);
+    const order = await Order.aggregate([
+      { $unwind: "$products" },
+      {$match: {
+        'products.status': 'Delivered',
+        $and: [
+          { 'products.deliveredDate': { $gt: from } },
+          { 'products.deliveredDate': { $lt: to } }
+        ]
+      }},
+      { $sort: { date: -1 } },
+      {
+        $lookup: {
+          from: 'products',
+          let: { productId: { $toObjectId: '$products.productid' } },
+          pipeline: [
+            { $match: { $expr: { $eq: ['$_id', '$$productId'] } } }
+          ],
+          as: 'products.productDetails'
+        }
+      },  
+      {
+        $addFields: {
+          'products.productDetails': { $arrayElemAt: ['$products.productDetails', 0] }
+        }
+      }
+    ]);
+
+    res.render("sales-report", { order ,admin:adminData });
+   
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+    
+
   
 
  
@@ -286,5 +386,10 @@ module.exports={
     unblock,
     loadAddBanner,
      addBanner,
-     loadSalesReport
+     loadSalesReport,
+     deleteBanner,
+     editBanner,
+     updateBanner,
+     rangeSort
+
 }

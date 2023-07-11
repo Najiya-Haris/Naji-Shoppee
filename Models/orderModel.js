@@ -34,6 +34,12 @@ const orderSchema = new mongoose.Schema({
     status:{
       type:String,
       default:'placed'
+    },
+    deliveredDate:{
+      type:Date,
+    },
+    returnReason:{
+      type:String
     }
 
   }],

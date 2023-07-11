@@ -10,7 +10,8 @@ const adminController = require('../controllers/adminController');
 const categoryController = require('../controllers/categoryController');
 const productController = require('../controllers/productController');
 const orderController = require('../controllers/orderController');
-const couponController=require("../controllers/couponController")
+const couponController=require("../controllers/couponController");
+const errorHandler = require('../middlewear/errorHandler');
 
 //const bodyParser = require('body-parser');
 admin_route.use(express.json())
@@ -63,7 +64,8 @@ admin_route.get('/deleteProduct',Auth.isLogin,productController.deleteProduct);
 admin_route.get('/editProductList/:id',Auth.isLogin,productController.editproduct);
 admin_route.post("/editproductList/:id", update.upload.array("image", 10), productController.updateProduct);
 admin_route.get('/deleteimg/:imgid/:prodid',Auth.isLogin,productController. deleteimage);
-admin_route.post("/editproduct/updateimage/:id", update.upload.array("image"), productController.updateimage);
+admin_route.post("/editproduct/updateimage/:id", update.upload.array("image"), productController.updateimage)
+admin_route.post('/range-sort',Auth.isLogin,adminController.rangeSort);
 
 
 admin_route.post('/changeStatus',orderController.changeStatus)
@@ -72,6 +74,11 @@ admin_route.post('/changeStatus',orderController.changeStatus)
 
 admin_route.get('/bannerlist',Auth.isLogin, adminController.loadAddBanner);
 admin_route.post('/bannerlist', update.upload.single('bannerImage'), adminController.addBanner);
+admin_route.get('/deleteBanner',adminController.deleteBanner);
+admin_route.get('/editbannerlist/:id',adminController.editBanner);
+admin_route.post("/editbannerList/:id", update.upload.single('bannerImage'), adminController.updateBanner);
+
+
 
 
 
@@ -80,11 +87,13 @@ admin_route.get('/coupon-list',Auth.isLogin,couponController.loadCoupenControlle
 admin_route.post('/insert-coupen',couponController.insertCoupen)
 admin_route.post('/update-coupen/:id',couponController.updateCoupen)
 admin_route.post('/delete-coupen',couponController.deleteCoupen)
+admin_route.post('/add-offer',couponController.addOffer)
 
 
 
 
 
+admin_route.use(errorHandler)
 
 admin_route.get('*',(req,res)=>{
   res.redirect('/admin')

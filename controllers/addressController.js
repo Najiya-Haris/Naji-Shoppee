@@ -6,17 +6,17 @@ const Address = require("../Models/addressModel")
 
 //loading add addresss page
 
-const loadAddAddress = async(req,res)=>{
+const loadAddAddress = async(req,res,next)=>{
     try {
       const session = req.session.user_id
       res.render('add-address',{session})
     } catch (error) {
-        console.log(error.message);
+       next(error)
     }
 }
 
 
-const insertAddress = async(req,res)=>{
+const insertAddress = async(req,res,next)=>{
     try {
         const addressDetails = await Address.findOne({userId:req.session.user_id});
        if(addressDetails){
@@ -56,14 +56,14 @@ const insertAddress = async(req,res)=>{
     }
 }
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
 
 //load edit address
 
-const loadEditAddress = async(req,res)=>{
+const loadEditAddress = async(req,res,next)=>{
     try {
         const session = await User.findById(req.session.user_id)
         const addressdata = await Address.findOne({userId:req.session.user_id},{addresses:{$elemMatch:{_id:req.query.id}}});
@@ -71,7 +71,7 @@ const loadEditAddress = async(req,res)=>{
         res.render('edit-address',{session,address:address[0]})
 
     } catch (error) {
-        console.log(error.message);
+       next(error)
     }
 }
 
@@ -79,7 +79,7 @@ const loadEditAddress = async(req,res)=>{
 // updating edited address
           
           
-const updateAddress = async (req,res) =>{
+const updateAddress = async (req,res,next) =>{
     try{
       
     const session = req.session.user_id;
@@ -99,7 +99,7 @@ const updateAddress = async (req,res) =>{
         }})
         res.redirect('/checkout-page')
 } catch (error) {
-console.log(error.message);
+next(error)
 }
 }
 
@@ -107,7 +107,7 @@ console.log(error.message);
 
 
 //delete address
-const deleteAddress = async (req, res) => {
+const deleteAddress = async (req, res,next) => {
     try {
       const id = req.session.user_id;
       const addId = req.body.address;
@@ -122,7 +122,7 @@ const deleteAddress = async (req, res) => {
       }
       res.status(200).json({ message: "Address deleted successfully" });
     } catch (error) {
-      console.log(error.message);
+      next(error)
       res.status(500).json({ error: "An error occurred while deleting the address" });
     }
   };

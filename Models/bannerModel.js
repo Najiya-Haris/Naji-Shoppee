@@ -39,6 +39,10 @@ button_text:{
 
     type:String,
     // required:true
+},
+is_delete:{
+    type:Boolean,
+    default:false,
 }
 
 });

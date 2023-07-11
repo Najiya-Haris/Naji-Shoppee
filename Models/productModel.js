@@ -45,6 +45,19 @@ const productSchema = new mongoose.Schema({
     discountName:{
         type:String,
     },
+    product_review:[{
+        user_name:{
+            type:String,
+            required:true
+        },
+        review:{
+            type:String,
+            required: true
+        },
+        star:{
+            type:Number
+        }
+    }]
 });
 
 const Product = mongoose.model('Product', productSchema);

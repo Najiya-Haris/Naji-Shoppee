@@ -8,6 +8,21 @@
           <div class="card">
             <div class="card-body">
               <h4 class="card-title">Order Status</h4>
+              <div class="d-flex justify-content-end">
+                <form action="/admin/range-sort" method="post">
+                  <h5>Date Range</h5>
+                  <div class="form-group">
+                    <input class="" type="date" id="from" name="from">
+                  </div>
+                  <div class="form-group d-flex">
+                    <input class="" type="date" id="to" name="to">
+                  </div>
+                  <div class="">
+                    <button class="btn btn-outline-success" type="submit">Submit</button>
+                  </div>
+                </form>
+              </div>
+              
               <div class="table-responsive">
                
                 <table class="table" id="example">
@@ -36,7 +51,7 @@
                           <td><%= orderItem.products.count %></td>
                           <td><%= orderItem.paymentMethod %></td>
                           <td><%= orderItem.products.status %></td>
-                          <td><%= orderItem.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g,'-') %></td>
+                          <td><%= orderItem.products.deliveredDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g,'-') %></td>
                         </tr>
                      
                     <% }) %>
