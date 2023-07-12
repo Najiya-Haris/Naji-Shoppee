@@ -571,7 +571,6 @@
     <!-- ekka Cart End -->
 
     <!-- Ec breadcrumb start -->
-    <!-- Ec breadcrumb start -->
     <div class="sticky-header-next-sec  ec-breadcrumb section-space-mb">
         <div class="container">
             <div class="row">
@@ -595,18 +594,23 @@
     </div>
     <!-- Ec breadcrumb end -->
 
+
+
     <!-- Sart Single product -->
     <section class="ec-page-content section-space-p">
         <div class="container">
             <div class="row">
-                <div class="ec-pro-rightside ec-common-rightside col-lg-9 order-lg-last col-md-12 order-md-first">
+                <div class="ec-pro-rightside ec-common-rightside col-lg-12 col-md-12">
 
                     <!-- Single product content Start -->
                     <div class="single-pro-block">
                         <div class="single-pro-inner">
                             <div class="row">
-                                <div class="single-pro-img">
+                                <div class="single-pro-img single-pro-img-no-sidebar">
                                     <div class="single-product-scroll">
+                                        <a class="ec-360-lbl" data-link-action="quickview" title="360 view" data-bs-toggle="modal" data-bs-target="#ec_360_view_modal">
+                                            <img src="assets/images/icons/360-degrees.png" alt="view image">
+                                        </a>
                                         <div class="single-product-cover">
                                             <div class="single-slide zoom-image-hover">
                                                 <img class="img-responsive" src="/adminAssets/adminImages/productImage/<%= product.image[0]  %>"
@@ -653,9 +657,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="single-pro-desc">
+                                <div class="single-pro-desc single-pro-desc-no-sidebar">
                                     <div class="single-pro-content">
                                         <h5 class="ec-single-title"><%= product.productName %></h5>
+                                        <h5 class="ec-single-title">$<%= product.price %></h5>
                                         <div class="ec-single-rating-wrap">
                                             <div class="ec-single-rating">
                                                 <i class="ecicon eci-star fill"></i>
@@ -664,119 +669,161 @@
                                                 <i class="ecicon eci-star fill"></i>
                                                 <i class="ecicon eci-star-o"></i>
                                             </div>
-                                            <span class="ec-read-review"><a href="#ec-spt-nav-review">Be the first to
-                                                    review this product</a></span>
+                                            <!-- <span class="ec-read-review"><a href="#ec-spt-nav-review">Be the first to
+                                                    review this product</a></span> -->
                                         </div>
-                                        <div class="ec-single-desc"><%= product.description %></div>
+                                        <div class="ec-single-desc"><%= product.description %>
+                                           </div>
 
-                                    
+                                       
                                         <div class="ec-single-price-stoke">
-                                            <div class="ec-single-price">
-                                                <span class="ec-single-ps-title">As low as</span>
-                                                <span class="new-price">$<%= product.price %>.00</span>
-                                            </div>
-                                            <div class="ec-single-stoke">
-                                                <span class="ec-single-ps-title">IN STOCK</span>
-                                            </div>
+                                          
                                         </div>
 
-                                        
+                                     
                                         <div class="ec-single-qty">
-                                         
+                                            <div class="qty-plus-minus">
+                                                <input class="qty-input" type="text" name="ec_qtybtn" value="1" />
+                                            </div>
                                             <div class="ec-single-cart ">
-                                                <button class="btn btn-primary"  onclick="addtocart('<%=product._id%>')">Add To Cart</button>
+                                                <button class="btn btn-primary" onclick="addtocart('<%=product._id%>')">Add To Cart</button>
                                             </div>
                                             <div class="ec-single-wishlist">
-                                                <a class="ec-btn-group wishlist" title="Wishlist" onclick="addWishlist('<%=product._id%>')"><img
+                                                <a onclick="addWishlist('<%=product._id%>')" class="ec-btn-group wishlist" title="Wishlist"><img
                                                         src="assets/images/icons/wishlist.svg" class="svg_img pro_svg"
                                                         alt="" /></a>
                                             </div>
-                                            
+                                            <div class="ec-single-quickview">
+                                                <a href="#" class="ec-btn-group quickview" data-link-action="quickview"
+                                                    title="Quick view" data-bs-toggle="modal"
+                                                    data-bs-target="#ec_quickview_modal"><img
+                                                        src="assets/images/icons/quickview.svg" class="svg_img pro_svg"
+                                                        alt="" /></a>
+                                            </div>
                                         </div>
-                                        
+                                       
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!--Single product content End -->
-                    <!-- Single product tab start -->
+                   
                     <div class="ec-single-pro-tab">
                         <div class="ec-single-pro-tab-wrapper">
                             <div class="ec-single-pro-tab-nav">
                                 <ul class="nav nav-tabs">
                                     
-                                    <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab" data-bs-target="#ec-spt-nav-review"
-                                            role="tablist">Reviews</a>
-                                    </li>
                                 </ul>
                             </div>
                             <div class="tab-content  ec-single-pro-tab-content">
+                                <div id="ec-spt-nav-details" class="tab-pane fade show active">
+                                    <div class="ec-single-pro-tab-desc">
+                                      
+                                        <form action="/addreview?id=<%= product._id  %>" class="w-full" method="post">
+                                            <h5 class="mtext-108 cl2 p-b-7">
+                                            Add a review
+                                            </h5>
+                                            <input type="hidden" name="prid" value="<%= product._id  %>">
+                                            <p class="stext-102 cl6">
+                                            Your email address will not be published. Required fields are marked *
+                                            </p>
+                                            <div class="flex-w flex-m p-t-50 p-b-23">
+                                            <span class="stext-102 cl3 m-r-16">
+                                              Your Rating
+                                            </span>
+                                            <span class="wrap-rating fs-18 cl11 pointer">
+                                              <i class="item-rating pointer zmdi zmdi-star-outline"></i>
+                                              <i class="item-rating pointer zmdi zmdi-star-outline"></i>
+                                              <i class="item-rating pointer zmdi zmdi-star-outline"></i>
+                                              <i class="item-rating pointer zmdi zmdi-star-outline"></i>
+                                              <i class="item-rating pointer zmdi zmdi-star-outline"></i>
+                                              <input class="dis-none" type="number" name="rating">
+                                            </span>
+                                            </div>
+                                            <div class="row p-b-25">
+                                            <div class="col-12 p-b-5">
+                                              <label class="stext-102 cl3" for="review">Your review</label>
+                                              <textarea class="size-110 bor8 stext-102 cl2 p-lr-20 p-tb-10" id="review" name="review"></textarea>
+                                            </div>
+                                            <div class="col-sm-6 p-b-5">
+                                              <label class="stext-102 cl3" for="name">Name</label>
+                                              <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="name" type="text" name="name">
+                                            </div>
+                                            <div class="col-sm-6 p-b-5">
+                                              <label class="stext-102 cl3" for="email">Email</label>
+                                              <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="email" type="text" name="email">
+                                            </div>
+                                            </div>
+                                            <button class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 m-b-10" type="submit">
+                                            Submit
+                                            </button>
+                                          </form>
+                                        
+                                    </div>
+                                </div>
+                                <div id="ec-spt-nav-info" class="tab-pane fade">
+                                    <div class="ec-single-pro-tab-moreinfo">
+                                     
+                                    </div>
+                                </div>
+
+
                                 
 
                                 <div id="ec-spt-nav-review" class="tab-pane fade">
                                     <div class="row">
                                         <div class="ec-t-review-wrapper">
-                                            <% product.product_review.forEach(x => { %>
                                             <div class="ec-t-review-item">
-                                               
-                                                 
-                                                
+                                                <div class="ec-t-review-avtar">
+                                                    <img src="assets/images/review-image/1.jpg" alt="" />
+                                                </div>
+                                                <div class="ec-t-review-content">
+                                                    <div class="ec-t-review-top">
+                                                        <div class="ec-t-review-name">Jeny Doe</div>
+                                                        <div class="ec-t-review-rating">
+                                                            <i class="ecicon eci-star fill"></i>
+                                                            <i class="ecicon eci-star fill"></i>
+                                                            <i class="ecicon eci-star fill"></i>
+                                                            <i class="ecicon eci-star fill"></i>
+                                                            <i class="ecicon eci-star-o"></i>
+                                                        </div>
+                                                    </div>
+                                                    <!-- <div class="ec-t-review-bottom">
+                                                        <p>Lorem Ipsum is simply dummy text of the printing and
+                                                            typesetting industry. Lorem Ipsum has been the industry's
+                                                            standard dummy text ever since the 1500s, when an unknown
+                                                            printer took a galley of type and scrambled it to make a
+                                                            type specimen.
+                                                        </p>
+                                                    </div> -->
+                                                </div>
+                                            </div>
+                                            <div class="ec-t-review-item">
                                                 <div class="ec-t-review-avtar">
                                                     <img src="assets/images/review-image/2.jpg" alt="" />
                                                 </div>
                                                 <div class="ec-t-review-content">
                                                     <div class="ec-t-review-top">
-                                                        <div class="ec-t-review-name"><%= x.user_name %></div>
+                                                        <!-- <div class="ec-t-review-name">Linda Morgus</div> -->
                                                         <div class="ec-t-review-rating">
-
-                                                            <% for(let i = 0 ; i<5 ;i++  ) {
-                                                                if(i<x.star ){%>
                                                             <i class="ecicon eci-star fill"></i>
-                                                            <% }else{%>
+                                                            <i class="ecicon eci-star fill"></i>
+                                                            <i class="ecicon eci-star fill"></i>
                                                             <i class="ecicon eci-star-o"></i>
-                                                            <% }}  %>
+                                                            <i class="ecicon eci-star-o"></i>
                                                         </div>
                                                     </div>
                                                     <div class="ec-t-review-bottom">
-                                                        <p><%= x.review %>
-                                                        </p>
+                                                    
                                                     </div>
                                                 </div>
-                                               
                                             </div>
-                                            <% }) %>
+
                                         </div>
                                         <div class="ec-ratting-content">
-                                            <h3>Add a Review</h3>
+                                            <!-- <h3>Add a Review</h3> -->
                                             <div class="ec-ratting-form">
-                                                <form action="/addreview?id=<%= product._id  %>" method="post">
-                                                    <div class="ec-ratting-star">
-                                                        <input type="hidden" name="prid" value="<%= product._id  %>">
-                                                        <span>Your rating:</span>
-                                                        <span class="wrap-rating fs-18 cl11 pointer">
-                                                            <i class="item-rating pointer zmdi zmdi-star-outline"></i>
-                                                            <i class="item-rating pointer zmdi zmdi-star-outline"></i>
-                                                            <i class="item-rating pointer zmdi zmdi-star-outline"></i>
-                                                            <i class="item-rating pointer zmdi zmdi-star-outline"></i>
-                                                            <i class="item-rating pointer zmdi zmdi-star-outline"></i>
-                                                            <input class="dis-none" type="number" name="rating">
-                                                          </span>
-                                                    </div>
-                                                    <div class="ec-ratting-input">
-                                                        <label class="stext-102 cl3" for="name">Name</label>
-                                                        <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="name" type="text" name="name">                                                    </div>
-                                                    <div class="ec-ratting-input">
-                                                        <label class="stext-102 cl3" for="email">Email</label>
-                                                        <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="email" type="text" name="email">
-                                                    </div>
-                                                    <div class="ec-ratting-input form-submit">
-                                                        <label class="stext-102 cl3" for="review">Your review</label>
-                                                        <textarea class="size-110 bor8 stext-102 cl2 p-lr-20 p-tb-10" id="review" name="review"></textarea>
-                                                        <button class="btn btn-primary" type="submit"
-                                                            value="Submit">Submit</button>
-                                                    </div>
+                                                <form action="#">
                                                 </form>
                                             </div>
                                         </div>
@@ -787,59 +834,7 @@
                     </div>
                     <!-- product details description area end -->
                 </div>
-                
+
             </div>
         </div>
     </section>
-
-    <script>
-
-        function addtocart(productid) {
-            $.ajax({
-                url: "/addtocart",
-                method: "post",
-                data: {
-                    id: productid
-                },
-                success: (response) => {
-                    if (response.success) {
-                        console.log("vvvvv");
-                        swal.fire({
-                            positon: 'center',
-                            icon: "success",
-                            title: 'product added to cart',
-                            showConfirmButton: false,
-                            timer: 1500,
-                        })
-                    }
-                }
-            })}
-            function addWishlist(id){
-                
-               $.ajax({
-             
-                url:'/addtoWishlist',
-                method:'post',
-                data: {
-                        proId:id
-                    },
-                    success: (response) => {
-                        swal.fire({
-                            positon: 'center',
-                            icon: "success",
-                            title: 'product added to wishlist',
-                            showConfirmButton: false,
-                            timer: 1500,
-                        })
-                        } 
-               })
-            }
-        
-
-    </script>
-
-  
-  
-
-
-<%- include('../layouts/user/footer.ejs') %>
