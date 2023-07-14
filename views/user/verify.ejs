@@ -48,9 +48,9 @@
 							<div>
 								<!-- <a href="/reSend" id="resendButton">resend otp</a> -->
 								
-								<a href="/reSend" id="resendButton">Resend OTP</a>
-								<p>Countdown Timer: <span id="countdownTimer">60</span> seconds</p>
-
+								<a href="/reSend" id="resend">Resend OTP</a>
+								<p>Countdown Timer: <span id="timer">60</span>seconds</p>
+								
 							</div>
 							<%
 		if(typeof message !== 'undefined'){
@@ -74,6 +74,26 @@
 
 		
     <%- include('../layouts/user/footer.ejs') %>
+
+
+
+	<script>
+		var timeLeft = 60;
+var timer = setInterval(function() {
+  timeLeft--;
+  if (timeLeft <= 0) {
+    clearInterval(timer);
+    document.getElementById("timer").innerHTML = "Time's up!";
+    document.getElementById("resend").style.display = "block";
+  } else {
+    document.getElementById("timer").innerHTML = timeLeft + " seconds";
+  }
+}, 1000);
+
+
+		
+		
+		</script>
 
 	<script>
 		function startCountdown() {

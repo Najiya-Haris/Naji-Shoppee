@@ -64,7 +64,8 @@ const reSendMail = async(req,res)=>{
   try {
     const userData = await User.find({email:email})
     const name = userData.name
-    sendverifyMail(name,email,otp)
+      const randomnumber= Math.floor(Math.random() * 9000) + 1000;
+    sendverifyMail(name,email,randomnumber)
     res.redirect('/verify')
   } catch (error) {
     console.log(error.message);
@@ -469,8 +470,6 @@ const addReview=async(req,res)=>{
       const content=req.body.review
       const star=req.body.rating
       const id=req.query.id
-      const prid=req.body.prid
-      console.log(id);
       const user = await Order.find({userId:session})
       await product.findByIdAndUpdate(id ,{$push:{
         product_review:{
@@ -480,7 +479,7 @@ const addReview=async(req,res)=>{
         }
       }},{ new: true, upsert: true })
 
-      res.redirect('/singleProduct?id='+prid)
+      res.redirect('/singleProduct?id='+id)
   }catch(error){
       console.log(error.message);
   }

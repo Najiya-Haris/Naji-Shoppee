@@ -94,5 +94,7 @@ user_route.get('/wishlist',wishlistController.  loadwishlist)
 user_route.post('/addtoWishlist',wishlistController.addToWishlist)
 user_route.get('/delete-wishlist',Auth.isLogin,wishlistController.deleteWishlist)
 
+user_route.get('/wallethistory',orderController.loadwallethistory)
+
 
 module.exports=user_route;

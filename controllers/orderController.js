@@ -141,6 +141,34 @@ const loadOrderManagement = async(req,res,next) =>{
   }
 }
 
+//wallet history
+
+const loadwallethistory=async(req,res,next)=>{
+  try{
+    const session = req.session.user_id
+    const userData = await User.findById({_id:session})
+    const orderData = await Order.findOne({paymentMethod:'Wallet-Payment',userId:session}).populate(
+      "products.productid"
+    );
+    if(orderData){
+      console.log(orderData.length);
+
+      res.render("wallethistory",{orders:orderData,session,userData})
+
+    }else{
+      res.render("wallethistory",{orders:nullrs,session,userData})
+    }
+  
+
+      
+
+    
+  }catch(error){
+    next(error)
+  }
+
+}
+
 
   //single order detail page in adminside
 
@@ -339,6 +367,7 @@ const loadOrderManagement = async(req,res,next) =>{
         loadSingleDetails,
         changeStatus,
         orderCancel,
-        loadOrderSuccess,
-        orderReturn
+        loadOrderSuccess,      
+        orderReturn,
+        loadwallethistory
     }
